@@ -1,0 +1,26 @@
+{
+  "name": "statuscodes",
+  "version": "0.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "author": "Pawel Grzybek <grzybecki@gmail.com> (https://pawelgrzybek.com/)",
+  "bin": "./dist/index.js",
+  "repository": "pawelgrzybek/statuscodes",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": " tsc",
+    "dev": " tsc --watch",
+    "test": "jest",
+    "test:watch": "jest --watch"
+  },
+  "devDependencies": {
+    "@types/node": "^11.13.0",
+    "jest": "^24.7.1",
+    "typescript": "^3.4.1"
+  },
+  "dependencies": {
+    "chalk": "^2.4.2"
+  }
+}
