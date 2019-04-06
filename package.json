@@ -1,11 +1,11 @@
 {
-  "name": "statuscodes",
-  "version": "0.0.0",
+  "name": "httpsc",
+  "version": "0.0.1",
   "main": "index.js",
   "license": "MIT",
   "author": "Pawel Grzybek <grzybecki@gmail.com> (https://pawelgrzybek.com/)",
   "bin": "./dist/index.js",
-  "repository": "pawelgrzybek/statuscodes",
+  "repository": "pawelgrzybek/httpsc",
   "files": [
     "dist"
   ],
