@@ -8,3 +8,4 @@ before_script: yarn
 script:
   - yarn lint
   - yarn build
+  - yarn test
