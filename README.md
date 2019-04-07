@@ -5,6 +5,8 @@
 
 Simple HTTP status codes reference CLI. The `httpsc` command stands for "HTTP status codes". Sorry, more meaningful package names are taken.
 
+![httpsc CLI screenshot](screenshot.jpg)
+
 ## Usage
 
 Use a pattern matching to get short info about multiple codes or detailed info about particular one.
