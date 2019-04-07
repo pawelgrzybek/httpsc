@@ -1,5 +1,6 @@
 # httpsc
 
+![Travis (.com)](https://img.shields.io/travis/com/pawelgrzybek/httpsc.svg?style=for-the-badge)
 ![NPM](https://img.shields.io/npm/l/httpsc.svg?style=for-the-badge)
 ![npm](https://img.shields.io/npm/v/httpsc.svg?style=for-the-badge)
 
