@@ -58,19 +58,25 @@ const data: Idata = {
       code: 100,
       shortDescription: "Continue",
       description:
-        "The client SHOULD continue with its request. This interim response is used to inform the client that the initial part of the request has been received and has not yet been rejected by the server. The client SHOULD continue by sending the remainder of the request or, if the request has already been completed, ignore this response. The server MUST send a final response after the request has been completed. See section 8.2.3 for detailed discussion of the use and handling of this status code."
+        "The server has received the request headers and the client should proceed to send the request body (in the case of a request for which a body needs to be sent; for example, a POST request). Sending a large request body to a server after a request has been rejected for inappropriate headers would be inefficient. To have a server check the request's headers, a client must send Expect: 100-continue as a header in its initial request and receive a 100 Continue status code in response before sending the body. If the client receives an error code such as 403 (Forbidden) or 405 (Method Not Allowed) then it shouldn't send the request's body. The response 417 Expectation Failed indicates that the request should be repeated without the Expect header as it indicates that the server doesn't support expectations (this is the case, for example, of HTTP/1.0 servers)."
     },
     {
       code: 101,
       shortDescription: "Switching Protocols",
       description:
-        "The server understands and is willing to comply with the client's request, via the Upgrade message header field (section 14.42), for a change in the application protocol being used on this connection. The server will switch protocols to those defined by the response's Upgrade header field immediately after the empty line which terminates the 101 response. The protocol SHOULD be switched only when it is advantageous to do so. For example, switching to a newer version of HTTP is advantageous over older versions, and switching to a real-time, synchronous protocol might be advantageous when delivering resources that use such features."
+        "The requester has asked the server to switch protocols and the server has agreed to do so."
     },
     {
       code: 102,
       shortDescription: "Processing (WebDAV)",
       description:
-        "The 102 (Processing) status code is an interim response used to inform the client that the server has accepted the complete request, but has not yet completed it. This status code SHOULD only be sent when the server has a reasonable expectation that the request will take significant time to complete. As guidance, if a method is taking longer than 20 seconds (a reasonable, but arbitrary value) to process the server SHOULD return a 102 (Processing) response. The server MUST send a final response after the request has been completed. Methods can potentially take a long period of time to process, especially methods that support the Depth header. In such cases the client may time-out the connection while waiting for a response. To prevent this the server may return a 102 (Processing) status code to indicate to the client that the server is still processing the method."
+        "A WebDAV request may contain many sub-requests involving file operations, requiring a long time to complete the request. This code indicates that the server has received and is processing the request, but no response is available yet.[7] This prevents the client from timing out and assuming the request was lost."
+    },
+    {
+      code: 103,
+      shortDescription: "Early Hints (RFC 8297)",
+      description:
+        "Used to return some response headers before final HTTP message."
     },
     {
       code: 200,
@@ -92,7 +98,7 @@ const data: Idata = {
     },
     {
       code: 203,
-      shortDescription: "Non-Authoritative Information",
+      shortDescription: "Non-Authoritative Information (since HTTP/1.1)",
       description:
         "The server is a transforming proxy (e.g. a Web accelerator) that received a 200 OK from its origin, but is returning a modified version of the origin's response."
     },
@@ -110,25 +116,25 @@ const data: Idata = {
     },
     {
       code: 206,
-      shortDescription: "Partial Content",
+      shortDescription: "Partial Content (RFC 7233)",
       description:
         "The server is delivering only part of the resource (byte serving) due to a range header sent by the client. The range header is used by HTTP clients to enable resuming of interrupted downloads, or split a download into multiple simultaneous streams."
     },
     {
       code: 207,
-      shortDescription: "Multi-Status (WebDAV)",
+      shortDescription: "Multi-Status (WebDAV; RFC 4918)",
       description:
         "The message body that follows is by default an XML message and can contain a number of separate response codes, depending on how many sub-requests were made."
     },
     {
       code: 208,
-      shortDescription: "Already Reported (WebDAV)",
+      shortDescription: "Already Reported (WebDAV; RFC 5842)",
       description:
         "The members of a DAV binding have already been enumerated in a preceding part of the (multistatus) response, and are not being included again."
     },
     {
       code: 226,
-      shortDescription: "IM Used",
+      shortDescription: "IM Used (RFC 3229)",
       description:
         "The server has fulfilled a request for the resource, and the response is a representation of the result of one or more instance-manipulations applied to the current instance."
     },
@@ -146,43 +152,43 @@ const data: Idata = {
     },
     {
       code: 302,
-      shortDescription: "Found",
+      shortDescription: 'Found (Previously "Moved temporarily")',
       description:
-        'Tells the client to look at (browse to) another URL. 302 has been superseded by 303 and 307. This is an example of industry practice contradicting the standard. The HTTP/1.0 specification (RFC 1945) required the client to perform a temporary redirect (the original describing phrase was "Moved Temporarily"),'
+        'Tells the client to look at (browse to) another URL. 302 has been superseded by 303 and 307. This is an example of industry practice contradicting the standard. The HTTP/1.0 specification (RFC 1945) required the client to perform a temporary redirect (the original describing phrase was "Moved Temporarily"),but popular browsers implemented 302 with the functionality of a 303 See Other. Therefore, HTTP/1.1 added status codes 303 and 307 to distinguish between the two behaviors. However, some Web applications and frameworks use the 302 status code as if it were the 303.'
     },
     {
       code: 303,
-      shortDescription: "See Other",
+      shortDescription: "See Other (since HTTP/1.1)",
       description:
         "The response to the request can be found under another URI using the GET method. When received in response to a POST (or PUT/DELETE), the client should presume that the server has received the data and should issue a new GET request to the given URI."
     },
     {
       code: 304,
-      shortDescription: "Not Modified",
+      shortDescription: "Not Modified (RFC 7232)",
       description:
         "Indicates that the resource has not been modified since the version specified by the request headers If-Modified-Since or If-None-Match. In such case, there is no need to retransmit the resource since the client still has a previously-downloaded copy."
     },
     {
       code: 305,
-      shortDescription: "Use Proxy",
+      shortDescription: "Use Proxy (since HTTP/1.1)",
       description:
         "The requested resource is available only through a proxy, the address for which is provided in the response. Many HTTP clients (such as Mozilla Firefox and Internet Explorer) do not correctly handle responses with this status code, primarily for security reasons."
     },
     {
       code: 306,
-      shortDescription: "(Unused)",
+      shortDescription: "Switch Proxy",
       description:
         'No longer used. Originally meant "Subsequent requests should use the specified proxy."'
     },
     {
       code: 307,
-      shortDescription: "Temporary Redirect",
+      shortDescription: "Temporary Redirect (since HTTP/1.1)",
       description:
         "In this case, the request should be repeated with another URI; however, future requests should still use the original URI. In contrast to how 302 was historically implemented, the request method is not allowed to be changed when reissuing the original request. For example, a POST request should be repeated using another POST request."
     },
     {
       code: 308,
-      shortDescription: "Permanent Redirect (experimental)",
+      shortDescription: "Permanent Redirect (RFC 7538)",
       description:
         "The request and all future requests should be repeated using another URI. 307 and 308 parallel the behaviors of 302 and 301, but do not allow the HTTP method to change. So, for example, submitting a form to a permanently redirected resource may continue smoothly."
     },
@@ -194,7 +200,7 @@ const data: Idata = {
     },
     {
       code: 401,
-      shortDescription: "Unauthorized",
+      shortDescription: "Unauthorized (RFC 7235)",
       description:
         'Similar to 403 Forbidden, but specifically for use when authentication is required and has failed or has not yet been provided. The response must include a WWW-Authenticate header field containing a challenge applicable to the requested resource. See Basic access authentication and Digest access authentication. 401 semantically means "unauthenticated", i.e. the user does not have the necessary credentials. Note: Some sites incorrectly issue HTTP 401 when an IP address is banned from the website (usually the website domain) and that specific address is refused permission to access a website.'
     },
@@ -230,7 +236,7 @@ const data: Idata = {
     },
     {
       code: 407,
-      shortDescription: "Proxy Authentication Required",
+      shortDescription: "Proxy Authentication Required (RFC 7235)",
       description: "The client must first authenticate itself with the proxy."
     },
     {
@@ -259,19 +265,19 @@ const data: Idata = {
     },
     {
       code: 412,
-      shortDescription: "Precondition Failed",
+      shortDescription: "Precondition Failed (RFC 7232)",
       description:
         "The server does not meet one of the preconditions that the requester put on the request."
     },
     {
       code: 413,
-      shortDescription: "Request Entity Too Large",
+      shortDescription: "Payload Too Large (RFC 7231)",
       description:
         'The request is larger than the server is willing or able to process. Previously called "Request Entity Too Large".'
     },
     {
       code: 414,
-      shortDescription: "Request-URI Too Long",
+      shortDescription: "URI Too Long (RFC 7231)",
       description:
         'The URI provided was too long for the server to process. Often the result of too much data being encoded as a query-string of a GET request, in which case it should be converted to a POST request. Called "Request-URI Too Long" previously.'
     },
@@ -283,7 +289,7 @@ const data: Idata = {
     },
     {
       code: 416,
-      shortDescription: "Requested Range Not Satisfiable",
+      shortDescription: "Range Not Satisfiable (RFC 7233)",
       description:
         'The client has asked for a portion of the file (byte serving), but the server cannot supply that portion. For example, if the client asked for a part of the file that lies beyond the end of the file. Called "Requested Range Not Satisfiable" previously.'
     },
@@ -295,14 +301,9 @@ const data: Idata = {
     },
     {
       code: 418,
-      shortDescription: "I'm a teapot (RFC 2324)",
+      shortDescription: "I'm a teapot (RFC 2324, RFC 7168)",
       description:
         "This code was defined in 1998 as one of the traditional IETF April Fools' jokes, in RFC 2324, Hyper Text Coffee Pot Control Protocol, and is not expected to be implemented by actual HTTP servers. The RFC specifies this code should be returned by teapots requested to brew coffee. This HTTP status is used as an Easter egg in some websites, including Google.com."
-    },
-    {
-      code: 420,
-      shortDescription: "Enhance Your Calm (Twitter)",
-      description: ""
     },
     {
       code: 421,
@@ -312,26 +313,20 @@ const data: Idata = {
     },
     {
       code: 422,
-      shortDescription: "Unprocessable Entity (WebDAV)",
+      shortDescription: "Unprocessable Entity (WebDAV; RFC 4918)",
       description:
         "The request was well-formed but was unable to be followed due to semantic errors."
     },
     {
       code: 423,
-      shortDescription: "Locked (WebDAV)",
+      shortDescription: "Locked (WebDAV; RFC 4918)",
       description: "The resource that is being accessed is locked."
     },
     {
       code: 424,
-      shortDescription: "Failed Dependency (WebDAV)",
+      shortDescription: "Failed Dependency (WebDAV; RFC 4918)",
       description:
         "The request failed because it depended on another request and that request failed (e.g., a PROPPATCH)."
-    },
-    {
-      code: 425,
-      shortDescription: "Reserved for WebDAV",
-      description:
-        'Slein, J., Whitehead, E.J., et al., "WebDAV Advanced Collections Protocol", Work In Progress.'
     },
     {
       code: 426,
@@ -341,49 +336,25 @@ const data: Idata = {
     },
     {
       code: 428,
-      shortDescription: "Precondition Required",
+      shortDescription: "Precondition Required (RFC 6585)",
       description:
         "The origin server requires the request to be conditional. Intended to prevent the 'lost update' problem, where a client GETs a resource's state, modifies it, and PUTs it back to the server, when meanwhile a third party has modified the state on the server, leading to a conflict."
     },
     {
       code: 429,
-      shortDescription: "Too Many Requests",
+      shortDescription: "Too Many Requests (RFC 6585)",
       description:
         "The user has sent too many requests in a given amount of time. Intended for use with rate-limiting schemes."
     },
     {
       code: 431,
-      shortDescription: "Request Header Fields Too Large",
+      shortDescription: "Request Header Fields Too Large (RFC 6585)",
       description:
         "The server is unwilling to process the request because either an individual header field, or all the header fields collectively, are too large."
     },
     {
-      code: 444,
-      shortDescription: "No Response (Nginx)",
-      description:
-        "An Nginx HTTP server extension. The server returns no information to the client and closes the connection (useful as a deterrent for malware)."
-    },
-    {
-      code: 449,
-      shortDescription: "Retry With (Microsoft)",
-      description:
-        "A Microsoft extension. The request should be retried after performing the appropriate action."
-    },
-    {
-      code: 499,
-      shortDescription: "Client Closed Request (Nginx)",
-      description:
-        "An Nginx HTTP server extension. This code is introduced to log the case when the connection is closed by client while HTTP server is processing its request, making server unable to send the HTTP header back."
-    },
-    {
-      code: 450,
-      shortDescription: "Blocked by Windows Parental Controls (Microsoft)",
-      description:
-        "A Microsoft extension. This error is given when Windows Parental Controls are turned on and are blocking access to the given webpage."
-    },
-    {
       code: 451,
-      shortDescription: "Unavailable For Legal Reasons",
+      shortDescription: "Unavailable For Legal Reasons (RFC 7725)",
       description:
         "A server operator has received a legal demand to deny access to a resource or to a set of resources that includes the requested resource. The code 451 was chosen as a reference to the novel Fahrenheit 451 (see the Acknowledgements in the RFC)."
     },
@@ -391,85 +362,67 @@ const data: Idata = {
       code: 500,
       shortDescription: "Internal Server Error",
       description:
-        "The server encountered an unexpected condition which prevented it from fulfilling the request."
+        "A generic error message, given when an unexpected condition was encountered and no more specific message is suitable."
     },
     {
       code: 501,
       shortDescription: "Not Implemented",
       description:
-        "The server does not support the functionality required to fulfill the request. This is the appropriate response when the server does not recognize the request method and is not capable of supporting it for any resource."
+        "The server either does not recognize the request method, or it lacks the ability to fulfil the request. Usually this implies future availability (e.g., a new feature of a web-service API)."
     },
     {
       code: 502,
       shortDescription: "Bad Gateway",
       description:
-        "The server, while acting as a gateway or proxy, received an invalid response from the upstream server it accessed in attempting to fulfill the request."
+        "The server was acting as a gateway or proxy and received an invalid response from the upstream server."
     },
     {
       code: 503,
       shortDescription: "Service Unavailable",
       description:
-        "The server is currently unable to handle the request due to a temporary overloading or maintenance of the server. The implication is that this is a temporary condition which will be alleviated after some delay. If known, the length of the delay MAY be indicated in a Retry-After header. If no Retry-After is given, the client SHOULD handle the response as it would for a 500 response."
+        "The server cannot handle the request (because it is overloaded or down for maintenance). Generally, this is a temporary state."
     },
     {
       code: 504,
       shortDescription: "Gateway Timeout",
       description:
-        "The server, while acting as a gateway or proxy, did not receive a timely response from the upstream server specified by the URI (e.g. HTTP, FTP, LDAP) or some other auxiliary server (e.g. DNS) it needed to access in attempting to complete the request."
+        "The server was acting as a gateway or proxy and did not receive a timely response from the upstream server."
     },
     {
       code: 505,
       shortDescription: "HTTP Version Not Supported",
       description:
-        "The server does not support, or refuses to support, the HTTP protocol version that was used in the request message. The server is indicating that it is unable or unwilling to complete the request using the same major version as the client, as described in section 3.1, other than with this error message. The response SHOULD contain an entity describing why that version is not supported and what other protocols are supported by that server."
+        "The server does not support the HTTP protocol version used in the request."
     },
     {
       code: 506,
-      shortDescription: "Variant Also Negotiates (Experimental)",
+      shortDescription: "Variant Also Negotiates (RFC 2295)",
       description:
-        "The 506 status code indicates that the server has an internal configuration error: the chosen variant resource is configured to engage in transparent content negotiation itself, and is therefore not a proper end point in the negotiation process."
+        "Transparent content negotiation for the request results in a circular reference."
     },
     {
       code: 507,
-      shortDescription: "Insufficient Storage (WebDAV)",
+      shortDescription: "Insufficient Storage (WebDAV; RFC 4918)",
       description:
-        "The 507 (Insufficient Storage) status code means the method could not be performed on the resource because the server is unable to store the representation needed to successfully complete the request. This condition is considered to be temporary. If the request that received this status code was the result of a user action, the request MUST NOT be repeated until it is requested by a separate user action."
+        "The server is unable to store the representation needed to complete the request."
     },
     {
       code: 508,
-      shortDescription: "Loop Detected (WebDAV)",
+      shortDescription: "Loop Detected (WebDAV; RFC 5842)",
       description:
-        'The 508 (Loop Detected) status code indicates that the server terminated an operation because it encountered an infinite loop while processing a request with "Depth: infinity". This status indicates that the entire operation failed.'
-    },
-    {
-      code: 509,
-      shortDescription: "Bandwidth Limit Exceeded (Apache)",
-      description:
-        "This status code, while used by many servers, is not specified in any RFCs."
+        "The server detected an infinite loop while processing the request (sent instead of 208 Already Reported)."
     },
     {
       code: 510,
-      shortDescription: "Not Extended",
+      shortDescription: "Not Extended (RFC 2774)",
       description:
-        "The policy for accessing the resource has not been met in the request. The server should send back all the information necessary for the client to issue an extended request. It is outside the scope of this specification to specify how the extensions inform the client. If the 510 response contains information about extensions that were not present in the initial request then the client MAY repeat the request if it has reason to believe it can fulfill the extension policy by modifying the request according to the information provided in the 510 response. Otherwise the client MAY present any entity included in the 510 response to the user, since that entity may include relevant diagnostic information."
+        "Further extensions to the request are required for the server to fulfil it."
     },
     {
       code: 511,
-      shortDescription: "Network Authentication Required",
+      shortDescription: "Network Authentication Required (RFC 6585)",
       description:
-        "The 511 status code indicates that the client needs to authenticate to gain network access."
-    },
-    {
-      code: 598,
-      shortDescription: "Network read timeout error",
-      description:
-        "This status code is not specified in any RFCs, but is used by some HTTP proxies to signal a network read timeout behind the proxy to a client in front of the proxy."
-    },
-    {
-      code: 599,
-      shortDescription: "Network connect timeout error",
-      description:
-        "This status code is not specified in any RFCs, but is used by some HTTP proxies to signal a network connect timeout behind the proxy to a client in front of the proxy."
+        'The client needs to authenticate to gain network access. Intended for use by intercepting proxies used to control access to the network (e.g., "captive portals" used to require agreement to Terms of Service before granting full Internet access via a Wi-Fi hotspot).'
     }
   ]
 };
