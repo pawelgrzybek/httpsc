@@ -10,12 +10,15 @@
     "dist"
   ],
   "scripts": {
+    "prebuild": "yarn lint",
     "build": "rm -rf dist && tsc",
+    "postbuild": "yarn test",
     "dev": "tsc --watch",
     "test": "jest",
     "test:watch": "jest --watch",
     "lint": "eslint 'src/**/*.ts'",
-    "lint:clean": "eslint 'src/**/*.ts' --fix"
+    "lint:clean": "eslint 'src/**/*.ts' --fix",
+    "prepublish": "yarn build"
   },
   "devDependencies": {
     "@types/node": "^11.13.0",
