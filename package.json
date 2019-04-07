@@ -1,23 +1,31 @@
 {
   "name": "httpsc",
   "version": "0.0.2",
-  "main": "index.js",
   "license": "MIT",
   "author": "Pawel Grzybek <grzybecki@gmail.com> (https://pawelgrzybek.com/)",
-  "bin": "./dist/index.js",
+  "main": "./dist/index.js",
+  "bin": "./dist/cli.js",
   "repository": "pawelgrzybek/httpsc",
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": " tsc",
-    "dev": " tsc --watch",
+    "build": "rm -rf dist && tsc",
+    "dev": "tsc --watch",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "lint": "eslint 'src/**/*.ts'",
+    "lint:clean": "eslint 'src/**/*.ts' --fix"
   },
   "devDependencies": {
     "@types/node": "^11.13.0",
+    "@typescript-eslint/eslint-plugin": "^1.6.0",
+    "@typescript-eslint/parser": "^1.6.0",
+    "eslint": "^5.16.0",
+    "eslint-config-prettier": "^4.1.0",
+    "eslint-plugin-prettier": "^3.0.1",
     "jest": "^24.7.1",
+    "prettier": "^1.16.4",
     "typescript": "^3.4.1"
   },
   "dependencies": {

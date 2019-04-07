@@ -1,25 +1,19 @@
-#!/usr/bin/env
+import data from "./data";
+import { Istatuscode } from "./data";
+const { statuscodes } = data;
 
-const chalk = require("chalk");
-import { Istatuscode } from "./interfaces";
-
-const statuscodesData = require("./statuscodes");
-const { en } = statuscodesData;
-const results: Istatuscode[] = en.statuscodes.filter((item: Istatuscode) =>
-  item.code.toString().startsWith(process.argv[2])
+const dataAsAnObject: { [key: string]: Istatuscode } = statuscodes.reduce(
+  (accumulator, currentItem) => {
+    return {
+      ...accumulator,
+      [`code${currentItem.code}`]: currentItem
+    };
+  },
+  {}
 );
 
-const stdoutLength = Math.min(process.stdout.columns as number, 80);
+const getCode = (statusCode: number): Istatuscode =>
+  statuscodes.find(item => item.code === statusCode) as Istatuscode;
 
-const formatSingle = item => {
-  console.log(chalk.yellow("ᐧ".repeat(stdoutLength)));
-
-  console.log(chalk.bold(`${item.code} — ${item.shortDescription}`));
-  console.log(item.description);
-
-  if (results.length === 1) {
-    console.log(chalk.yellow("ᐧ".repeat(stdoutLength)));
-  }
-};
-
-results.map(formatSingle);
+export default dataAsAnObject;
+export { getCode };
