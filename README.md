@@ -34,4 +34,4 @@ import httpsc, { getCode } from "httpsc";
 
 ## Thanks to
 
-Wikipedia :-*
+[Wikipedia](https://en.wikipedia.org/wiki/List_of_HTTP_status_codes) :-*
