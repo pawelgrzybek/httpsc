@@ -1,6 +1,9 @@
 # httpsc
 
-Simple HTTP status codes reference CLI
+![NPM](https://img.shields.io/npm/l/httpsc.svg?style=for-the-badge)
+![npm](https://img.shields.io/npm/v/httpsc.svg?style=for-the-badge)
+
+Simple HTTP status codes reference CLI. The `httpsc` command stands for "HTTP status codes". Sorry, more meaningful package names are taken.
 
 ## Usage
 
@@ -14,6 +17,10 @@ Use a pattern matching to get short info about multiple codes or detailed info a
 ### Node.js API
 
 Do you wan't to use this info on your project? Here you go.
+
+```
+yarn add httpsc
+```
 
 ```js
 import httpsc, { getCode } from "httpsc";
