@@ -19,18 +19,27 @@ else {
 function printBorder() {
     console.log(chalk_1.default.yellow.bold("ᐧ".repeat(stdoutLength)));
 }
-function printItem(item, showDescription = false) {
+function printItem(item, showDescription = false, showDescriptionMargin = false, titleBold = false) {
     const { code, shortDescription, description } = item;
-    console.log(`${chalk_1.default.bold(code.toString().padEnd(3, "x"))} — ${shortDescription}`);
+    if (titleBold) {
+        console.log(chalk_1.default.bold(`${code.toString().padEnd(3, "x")} — ${shortDescription}`));
+    }
+    else {
+        console.log(`${chalk_1.default.bold(code.toString().padEnd(3, "x"))} — ${shortDescription}`);
+    }
     if (showDescription) {
+        console.log("");
         console.log(description);
+    }
+    if (showDescriptionMargin) {
+        console.log("");
     }
 }
 function printAll() {
     const classesLength = classes.length;
     classes.forEach((classesItem, index) => {
         printBorder();
-        printItem(classesItem);
+        printItem(classesItem, true, true, true);
         const codes = statuscodes.filter((item) => item.code.toString().startsWith(classesItem.code.toString()));
         codes.forEach(item => printItem(item));
         if (index === classesLength - 1) {
@@ -45,6 +54,9 @@ function printGroup(content) {
 }
 function printSingle(content) {
     printBorder();
-    content.forEach(item => printItem(item, true));
+    if (!content.length) {
+        console.log("No results :-(");
+    }
+    content.forEach(item => printItem(item, true, false, true));
     printBorder();
 }

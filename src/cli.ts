@@ -22,13 +22,28 @@ function printBorder() {
   console.log(chalk.yellow.bold("ᐧ".repeat(stdoutLength)));
 }
 
-function printItem(item: Istatuscode | Iclass, showDescription = false) {
+function printItem(
+  item: Istatuscode | Iclass,
+  showDescription = false,
+  showDescriptionMargin = false,
+  titleBold = false
+) {
   const { code, shortDescription, description } = item;
-  console.log(
-    `${chalk.bold(code.toString().padEnd(3, "x"))} — ${shortDescription}`
-  );
+  if (titleBold) {
+    console.log(
+      chalk.bold(`${code.toString().padEnd(3, "x")} — ${shortDescription}`)
+    );
+  } else {
+    console.log(
+      `${chalk.bold(code.toString().padEnd(3, "x"))} — ${shortDescription}`
+    );
+  }
   if (showDescription) {
+    console.log("");
     console.log(description);
+  }
+  if (showDescriptionMargin) {
+    console.log("");
   }
 }
 
@@ -36,7 +51,7 @@ function printAll() {
   const classesLength = classes.length;
   classes.forEach((classesItem: Iclass, index) => {
     printBorder();
-    printItem(classesItem);
+    printItem(classesItem, true, true, true);
     const codes: Istatuscode[] = statuscodes.filter((item: Istatuscode) =>
       item.code.toString().startsWith(classesItem.code.toString())
     );
@@ -55,6 +70,9 @@ function printGroup(content: Istatuscode[]) {
 
 function printSingle(content: Istatuscode[]) {
   printBorder();
-  content.forEach(item => printItem(item, true));
+  if (!content.length) {
+    console.log("No results :-(");
+  }
+  content.forEach(item => printItem(item, true, false, true));
   printBorder();
 }
