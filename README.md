@@ -19,7 +19,7 @@ Use a pattern matching to get short info about multiple codes or detailed info a
 
 ### Node.js API
 
-Do you wan't to use this info on your project? Here you go.
+Do you want to use this info on your project? Here you go.
 
 ```
 yarn add httpsc
