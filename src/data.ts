@@ -74,7 +74,7 @@ const data: Idata = {
     },
     {
       code: 103,
-      shortDescription: "Early Hints (RFC 8297)",
+      shortDescription: "Early Hints",
       description:
         "Used to return some response headers before final HTTP message."
     },
