@@ -55,7 +55,7 @@ function printAll() {
     const codes: Istatuscode[] = statuscodes.filter((item: Istatuscode) =>
       item.code.toString().startsWith(classesItem.code.toString())
     );
-    codes.forEach(item => printItem(item));
+    codes.forEach((item) => printItem(item));
     if (index === classesLength - 1) {
       printBorder();
     }
@@ -64,7 +64,7 @@ function printAll() {
 
 function printGroup(content: Istatuscode[]) {
   printBorder();
-  content.forEach(item => printItem(item));
+  content.forEach((item) => printItem(item));
   printBorder();
 }
 
@@ -73,6 +73,6 @@ function printSingle(content: Istatuscode[]) {
   if (!content.length) {
     console.log("No results :-(");
   }
-  content.forEach(item => printItem(item, true, false, true));
+  content.forEach((item) => printItem(item, true, false, true));
   printBorder();
 }

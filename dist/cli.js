@@ -41,7 +41,7 @@ function printAll() {
         printBorder();
         printItem(classesItem, true, true, true);
         const codes = statuscodes.filter((item) => item.code.toString().startsWith(classesItem.code.toString()));
-        codes.forEach(item => printItem(item));
+        codes.forEach((item) => printItem(item));
         if (index === classesLength - 1) {
             printBorder();
         }
@@ -49,7 +49,7 @@ function printAll() {
 }
 function printGroup(content) {
     printBorder();
-    content.forEach(item => printItem(item));
+    content.forEach((item) => printItem(item));
     printBorder();
 }
 function printSingle(content) {
@@ -57,6 +57,6 @@ function printSingle(content) {
     if (!content.length) {
         console.log("No results :-(");
     }
-    content.forEach(item => printItem(item, true, false, true));
+    content.forEach((item) => printItem(item, true, false, true));
     printBorder();
 }
