@@ -1,6 +1,6 @@
 {
   "name": "httpsc",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "license": "MIT",
   "author": "Pawel Grzybek <grzybecki@gmail.com> (https://pawelgrzybek.com/)",
   "main": "./dist/index.js",
