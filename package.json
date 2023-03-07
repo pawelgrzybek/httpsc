@@ -1,6 +1,7 @@
 {
   "name": "httpsc",
   "version": "0.0.6",
+  "description": "Simple HTTP status codes reference CLI",
   "license": "MIT",
   "author": "Pawel Grzybek <grzybecki@gmail.com> (https://pawelgrzybek.com/)",
   "main": "./dist/index.js",
